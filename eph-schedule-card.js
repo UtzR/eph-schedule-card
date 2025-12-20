@@ -417,3 +417,13 @@ class EphScheduleCardEditor extends LitElement {
 }
 
 customElements.define('eph-schedule-card-editor', EphScheduleCardEditor);
+
+// Register card with Home Assistant's card picker
+window.customCards = window.customCards || [];
+window.customCards.push({
+  type: 'eph-schedule-card',
+  name: 'EPH Schedule Card',
+  preview: false,
+  description: 'Display weekly heating schedule from EPH Controls Ember climate entities',
+  documentationURL: 'https://github.com/UtzR/eph-schedule-card',
+});
