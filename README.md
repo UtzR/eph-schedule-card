@@ -18,13 +18,23 @@ A custom Lovelace card for Home Assistant that displays the weekly heating sched
 ### Via HACS (Recommended)
 
 1. Open HACS in Home Assistant
-2. Go to **Frontend** tab
-3. Click **Explore & Download Repositories**
-4. Search for "EPH Schedule Card" or add custom repository:
-   - URL: `https://github.com/UtzR/eph-schedule-card`
-   - Category: **Lovelace**
-5. Click **Download**
-6. Restart Home Assistant
+2. Click the three dots menu (⋮) in the top right corner
+3. Select **Custom repositories**
+4. Click **Add** and enter:
+   - **Repository**: `https://github.com/UtzR/eph-schedule-card`
+   - **Type**: **Dashboard**
+5. Click **Add**
+6. Go to the **Dashboard** tab in HACS
+7. Find **EPH Schedule Card** in the list
+8. Click **Download**
+9. **Important**: After installation, you may need to manually add the resource:
+   - Go to **Settings** → **Dashboards** → **Resources** (click the three dots menu)
+   - Click **Add Resource**
+   - URL: `/hacsfiles/eph-schedule-card/eph-schedule-card.js`
+   - Resource type: **JavaScript Module**
+   - Click **Create**
+10. Restart Home Assistant
+11. Clear your browser cache (Ctrl+Shift+R or Cmd+Shift+R)
 
 ### Manual Installation
 
@@ -94,6 +104,33 @@ The card reads the `schedule` attribute from your EPH Controls climate entity. T
 - Times are in 24-hour format
 
 ## Troubleshooting
+
+### Card not appearing in "Add Card" list
+
+If the card doesn't appear in the dashboard's "Add Card" list after HACS installation:
+
+1. **Verify the resource is added**:
+   - Go to **Settings** → **Dashboards** → **Resources**
+   - Look for `/hacsfiles/eph-schedule-card/eph-schedule-card.js`
+   - If missing, add it manually (see step 9 in HACS installation)
+
+2. **Check browser console for errors**:
+   - Open browser developer tools (F12)
+   - Check the Console tab for JavaScript errors
+   - Common issues: import failures, syntax errors
+
+3. **Try manual card addition**:
+   - When adding a card, scroll to the bottom and select **Manual**
+   - Enter: `type: custom:eph-schedule-card`
+   - Then configure the entity in the card editor
+
+4. **Clear browser cache**:
+   - Hard refresh: Ctrl+Shift+R (Windows/Linux) or Cmd+Shift+R (Mac)
+   - Or clear browser cache completely
+
+5. **Verify HACS installation**:
+   - Check that the card file exists in `/config/www/community/eph-schedule-card/`
+   - Restart Home Assistant after installation
 
 ### Card shows "Entity not found"
 - Verify the entity ID is correct
