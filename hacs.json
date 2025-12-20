@@ -1,0 +1,7 @@
+{
+  "name": "EPH Schedule Card",
+  "render_readme": true,
+  "filename": "eph-schedule-card.js",
+  "domains": ["lovelace"],
+  "iot_class": "Local Push"
+}

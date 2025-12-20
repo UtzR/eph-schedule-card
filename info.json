@@ -1,0 +1,8 @@
+{
+  "domain": "eph_schedule_card",
+  "name": "EPH Schedule Card",
+  "documentation": "https://github.com/UtzR/eph-schedule-card",
+  "dependencies": [],
+  "codeowners": [],
+  "requirements": []
+}
