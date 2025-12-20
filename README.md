@@ -13,6 +13,12 @@ A custom Lovelace card for Home Assistant that displays the weekly heating sched
 - Responsive design for mobile and desktop
 - Matches Home Assistant theme automatically
 
+## View 
+
+The card view (Shown with the mini climate card on top): 
+
+![Example view](schedule.png)
+
 ## Installation
 
 ### Via HACS (Recommended)
