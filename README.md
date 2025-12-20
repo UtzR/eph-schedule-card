@@ -2,6 +2,8 @@
 
 A custom Lovelace card for Home Assistant that displays the weekly heating schedule from EPH Controls Ember climate entities.
 
+**Repository**: [https://github.com/UtzR/eph-schedule-card](https://github.com/UtzR/eph-schedule-card)
+
 ## Features
 
 - Display weekly schedule from EPH Controls climate entities
@@ -18,13 +20,15 @@ A custom Lovelace card for Home Assistant that displays the weekly heating sched
 1. Open HACS in Home Assistant
 2. Go to **Frontend** tab
 3. Click **Explore & Download Repositories**
-4. Search for "EPH Schedule Card"
+4. Search for "EPH Schedule Card" or add custom repository:
+   - URL: `https://github.com/UtzR/eph-schedule-card`
+   - Category: **Lovelace**
 5. Click **Download**
 6. Restart Home Assistant
 
 ### Manual Installation
 
-1. Download `eph-schedule-card.js` to your `www` directory in Home Assistant
+1. Download `eph-schedule-card.js` from [GitHub](https://github.com/UtzR/eph-schedule-card) to your `www` directory in Home Assistant
 2. Add the resource in Lovelace:
    - Go to **Settings** → **Dashboards** → **Resources**
    - Click **Add Resource**
@@ -124,4 +128,4 @@ MIT License - see LICENSE file for details
 
 ## Support
 
-For issues, feature requests, or contributions, please visit the GitHub repository.
+For issues, feature requests, or contributions, please visit the [GitHub repository](https://github.com/UtzR/eph-schedule-card).
