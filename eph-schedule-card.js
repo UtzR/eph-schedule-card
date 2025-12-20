@@ -72,7 +72,59 @@ class EphScheduleCard extends HTMLElement {
 
   _handleDayChange(event) {
     this._selectedDay = event.target.value;
-    this._render();
+    this._updateScheduleGrid();
+  }
+
+  _updateScheduleGrid() {
+    // Only update the schedule grid, don't recreate the entire card
+    const scheduleContainer = this.shadowRoot.querySelector('.schedule-container');
+    if (!scheduleContainer) {
+      // If container doesn't exist, fall back to full render
+      this._render();
+      return;
+    }
+
+    const daySchedule = this._getDaySchedule(this._selectedDay);
+    
+    let gridContent = '';
+    if (!daySchedule) {
+      gridContent = '<div class="error-message">No schedule data available for selected day.</div>';
+    } else {
+      const periods = ['p1', 'p2', 'p3'];
+      const periodLabels = ['P1', 'P2', 'P3'];
+      
+      let rows = '';
+      periods.forEach((period, index) => {
+        const timeRange = daySchedule[period];
+        const parsed = this._parseTimeRange(timeRange);
+        const isDisabled = !timeRange || timeRange === 'null' || parsed.start === null;
+        
+        rows += `
+          <tr class="${isDisabled ? 'disabled' : ''}">
+            <td class="period-label">${periodLabels[index]}</td>
+            <td class="time-cell">${isDisabled ? '—' : parsed.start}</td>
+            <td class="time-cell">${isDisabled ? '—' : parsed.end}</td>
+          </tr>
+        `;
+      });
+
+      gridContent = `
+        <table class="schedule-grid">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th class="time-header">Start Time</th>
+              <th class="time-header">End Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    scheduleContainer.innerHTML = gridContent;
   }
 
   _render() {
@@ -149,6 +201,9 @@ class EphScheduleCard extends HTMLElement {
           padding: 12px;
           text-align: left;
           font-weight: 500;
+        }
+        .schedule-grid th.time-header {
+          text-align: center;
         }
         .schedule-grid tbody tr {
           border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.12));
@@ -286,8 +341,8 @@ class EphScheduleCard extends HTMLElement {
           <thead>
             <tr>
               <th>Period</th>
-              <th>Start Time</th>
-              <th>End Time</th>
+              <th class="time-header">Start Time</th>
+              <th class="time-header">End Time</th>
             </tr>
           </thead>
           <tbody>
@@ -336,6 +391,21 @@ class EphScheduleCardEditor extends HTMLElement {
   }
 
   setConfig(config) {
+    // Preserve focus state if inputs exist
+    let focusedField = null;
+    let cursorPosition = null;
+    if (this.shadowRoot) {
+      const entityInput = this.shadowRoot.getElementById('entity');
+      const titleInput = this.shadowRoot.getElementById('title');
+      if (entityInput && entityInput === document.activeElement) {
+        focusedField = 'entity';
+        cursorPosition = entityInput.selectionStart;
+      } else if (titleInput && titleInput === document.activeElement) {
+        focusedField = 'title';
+        cursorPosition = titleInput.selectionStart;
+      }
+    }
+
     this._config = { 
       entity: '',
       title: 'EPH Schedule',
@@ -343,6 +413,17 @@ class EphScheduleCardEditor extends HTMLElement {
       ...config 
     };
     this._render();
+
+    // Restore focus and cursor position
+    if (focusedField && this.shadowRoot) {
+      const input = this.shadowRoot.getElementById(focusedField);
+      if (input) {
+        input.focus();
+        if (cursorPosition !== null && input.setSelectionRange) {
+          input.setSelectionRange(cursorPosition, cursorPosition);
+        }
+      }
+    }
   }
 
   set hass(hass) {
