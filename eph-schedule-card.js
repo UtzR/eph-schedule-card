@@ -56,6 +56,25 @@ class EphScheduleCard extends HTMLElement {
     return schedule[dayName];
   }
 
+  _getScheduleType() {
+    const schedule = this._getSchedule();
+    if (!schedule) {
+      return null;
+    }
+    const type = schedule.type;
+    if (type === 'EMBER-TS' || type === 'EMBER-TS2') {
+      return 'EMBER-TS';
+    }
+    return type || 'EMBER-PS';
+  }
+
+  _parseTimeValue(timeStr) {
+    if (!timeStr || timeStr === 'null') {
+      return null;
+    }
+    return timeStr.trim();
+  }
+
   _parseTimeRange(timeStr) {
     if (!timeStr || timeStr === 'null') {
       return { start: null, end: null };
@@ -85,11 +104,49 @@ class EphScheduleCard extends HTMLElement {
     }
 
     const daySchedule = this._getDaySchedule(this._selectedDay);
+    const scheduleType = this._getScheduleType();
     
     let gridContent = '';
     if (!daySchedule) {
       gridContent = '<div class="error-message">No schedule data available for selected day.</div>';
+    } else if (scheduleType === 'EMBER-TS') {
+      // EMBER-TS format: 6 periods with Time and Temperature
+      const periods = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+      const periodLabels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
+      
+      let rows = '';
+      periods.forEach((period, index) => {
+        const timeValue = daySchedule[period];
+        const tempKey = `t${index + 1}`;
+        const tempValue = daySchedule[tempKey];
+        const parsedTime = this._parseTimeValue(timeValue);
+        const isDisabled = !parsedTime;
+        
+        rows += `
+          <tr class="${isDisabled ? 'disabled' : ''}">
+            <td class="period-label">${periodLabels[index]}</td>
+            <td class="time-cell">${isDisabled ? '—' : parsedTime}</td>
+            <td class="time-cell">${isDisabled ? '—' : (tempValue !== null && tempValue !== undefined ? tempValue : '—')}</td>
+          </tr>
+        `;
+      });
+
+      gridContent = `
+        <table class="schedule-grid">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th class="time-header">Time</th>
+              <th class="time-header">Temperature</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
     } else {
+      // EMBER-PS format: 3 periods with Start Time and End Time
       const periods = ['p1', 'p2', 'p3'];
       const periodLabels = ['P1', 'P2', 'P3'];
       
@@ -314,10 +371,48 @@ class EphScheduleCard extends HTMLElement {
     ).join('');
 
     // Build schedule grid
+    const scheduleType = this._getScheduleType();
     let gridContent = '';
     if (!daySchedule) {
       gridContent = '<div class="error-message">No schedule data available for selected day.</div>';
+    } else if (scheduleType === 'EMBER-TS') {
+      // EMBER-TS format: 6 periods with Time and Temperature
+      const periods = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+      const periodLabels = ['P1', 'P2', 'P3', 'P4', 'P5', 'P6'];
+      
+      let rows = '';
+      periods.forEach((period, index) => {
+        const timeValue = daySchedule[period];
+        const tempKey = `t${index + 1}`;
+        const tempValue = daySchedule[tempKey];
+        const parsedTime = this._parseTimeValue(timeValue);
+        const isDisabled = !parsedTime;
+        
+        rows += `
+          <tr class="${isDisabled ? 'disabled' : ''}">
+            <td class="period-label">${periodLabels[index]}</td>
+            <td class="time-cell">${isDisabled ? '—' : parsedTime}</td>
+            <td class="time-cell">${isDisabled ? '—' : (tempValue !== null && tempValue !== undefined ? tempValue : '—')}</td>
+          </tr>
+        `;
+      });
+
+      gridContent = `
+        <table class="schedule-grid">
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th class="time-header">Time</th>
+              <th class="time-header">Temperature</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
     } else {
+      // EMBER-PS format: 3 periods with Start Time and End Time
       const periods = ['p1', 'p2', 'p3'];
       const periodLabels = ['P1', 'P2', 'P3'];
       
